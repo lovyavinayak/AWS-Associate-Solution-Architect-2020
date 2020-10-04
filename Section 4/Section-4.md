@@ -41,3 +41,24 @@
 - **High Availability**: Run instances for the same application across multiple AZs.
     - Can be achieved via ASG multiple AZs or Load Balancer multiple AZs.
 
+# Load Balancing
+- Load balancers are servers that forward internet traffic to multiple servers (EC2 Instances) downstream.
+
+**Why use a Load Balancer?**
+- Spread load across multiple downstream instances
+- Expose a single point of access (DNS) to your application
+- Seamlessly handle failures of downstream instances
+- Do regular health checks to your instances
+- Provide SSL termination (HTTPS) for your websites
+- Enforce stickiness with cookies
+- High availability across zones
+- Separate public traffic from private traffic
+
+**Why use an EC2 Load Balancer (ELB)?**
+
+- An ELB is a managed load balancer
+    - AWS gurantees that it will be working
+    - AWS takes care of upgrades, maintenance, high availability 
+    - AWS provides only few configuration knobs
+- It costs less to setup your own LB but it be a lot more effort on your end
+- It is integrated with many AWS services
