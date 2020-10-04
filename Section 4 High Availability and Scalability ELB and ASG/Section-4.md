@@ -25,3 +25,7 @@
 - Scaling in or scaling out.
 - Can be achieved via Auto Scaling Group or Load Balancer.
 
+## High Availability
+- Run instances for the same application across multiple AZs. 
+- Can be achieved via ASG in multiple AZs or Load Balancer in multiple AZs.
+
