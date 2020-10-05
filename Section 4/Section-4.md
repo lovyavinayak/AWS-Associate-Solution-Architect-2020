@@ -27,7 +27,7 @@
 - High availability means running your application / system in at least 2 data centers (== Availability Zones)
 - The goal of high availability is to survive a data center loss
 - The high availability can be passive (for RDS Multi AZ for example)
-• The high availability can be active (for horizontal scaling)
+- The high availability can be active (for horizontal scaling)
 
 ## High Availability and Scalability for EC2
 
@@ -71,10 +71,64 @@
 - If the response is not 200 (OK), then the instance is unhealthy
 - Happens every n seconds and the time interval can be modified
 
-## Types of Load Balancers
+## Types of Load Balancers [Need to know for the exam]
 - AWS has 3 kinds of managed Load Balancers
     - **Classic Load Balancer (v1 - old generation) – 2009**: HTTP, HTTPS, TCP
-    - **Application Load Balancer (v2 - new generation) – 2016**: HTTP, HTTPS, WebSocket
+    - **Application Load Balancer (v2 - new generation) – 2016**: HTTP, HTTPS, WebSocket. **Should be on the exam**
     - **Network Load Balancer (v2 - new generation) – 2017**: TCP, TLS (secure TCP) & UDP
 - Overall, it is recommended to use the newer / v2 generation load balancers as they provide more features
 - You can setup internal (private) or external (public) ELBs
+- Review slide 84
+
+**Classic Load Balancer**
+- Supports TCP (Layer 4), HTTP & HTTPS (Layer 7)
+- Health checks are TCP or HTTP based
+- Fixed hostname XXX.region.elb.amazonaws.com
+
+**Application Load Balancer (v2)**
+- Application load balancers is Layer 7 (HTTP)
+- Load balancing to multiple HTTP applications across machines (target groups)
+- Load balancing to multiple applications on the same machine (ex: containers)
+- Support for HTTP/2 and WebSocket
+- Support redirects (from HTTP to HTTPS for example)
+- Routing tables to different target groups
+    - Routing based on path in URL (example.com/users & example.com/posts)
+    - Routing based on hostname in URL (one.example.com & other.example.com)
+    - Routing based on Query String, Headers (example.com/users?id=123order=false)
+- ALB are a great fit for micro services & container-based application (example: Docker & Amazon ECS)
+- Has a port mapping feature to redirect to a dynamic port in ECS
+- In comparison, we’d need multiple Classic Load Balancer per application
+- Check slide 89
+
+**Application Load Balancer (v2) Target Groups**
+- EC2 instances (can be managed by an Auto Scaling Group) – HTTP
+- ECS tasks (managed by ECS itself) – HTTP
+- Lambda functions – HTTP request is translated into a JSON event
+- IP Addresses – must be private IPs
+- ALB can route to multiple target groups
+- Health checks are at the target group level
+- Fixed hostname (XXX.region.elb.amazonaws.com)
+- The application servers don’t see the IP of the client directly
+    - The true IP of the client is inserted in the header X-Forwarded-For
+    - We can also get Port (X-Forwarded-Port) and proto (X-Forwarded-Proto)
+
+**Network Load Balancer (v2)**
+- Network load balancers (Layer 4) allow to:
+    - Forward TCP & UDP traffic to your instances
+    - Handle millions of request per seconds
+    - Less latency ~100 ms (vs 400 ms for ALB)
+**NLB has one static IP per AZ, and supports assigning Elastic IP** (helpful for whitelisting specific IP)
+- NLB are used for extreme performance, TCP or UDP traffic
+- Not included in the AWS free tier    
+
+**Load Balancer Stickiness**
+- It is possible to implement stickiness so that the same client is always redirected to the same instance behind a load balancer
+- This works for Classic Load Balancers & Application Load Balancers
+- The “cookie” used for stickiness has an expiration date you control
+- Use case: make sure the user doesn’t lose his session data
+- Enabling stickiness may bring imbalance to
+the load over the backend EC2 instances
+
+
+
+
