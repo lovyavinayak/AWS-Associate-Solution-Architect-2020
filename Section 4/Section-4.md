@@ -129,6 +129,7 @@
 - Enabling stickiness may bring imbalance to the load over the backend EC2 instances
 
 **Cross-Zone Load Balancing** (Meh)
+
 **With Cross Zone Load Balancing**: each load balancer instance distributes evenly across all registered instances in all AZ
 - Otherwise, each load balancer node distributes requests evenly across the
 registered instances in its Availability Zone only.
@@ -138,9 +139,11 @@ registered instances in its Availability Zone only.
 **Classic Load Balancer**
 - Disabled by default
 - No charges for inter AZ data if enabled
+
 **Application Load Balancer**
 - Always on (cant be disabled)
 - No charges for inter AZ data
+
 **Network Load Balancer**
 - Disabled by default
 - You pay charges for inter AZ data if enabled 
