@@ -6,7 +6,7 @@
     - **Horizontal Scalability** (= elasticity)
 * Scalability is linked but different to High Availability
 
-## Vertical Scalability
+**Vertical Scalability**
 - Vertically scalability means increasing the size of the instance.
 - Involves scaling up or scaling down
 - **Example**: If an Application runs on a t2.micro scaling the application vertically means 
@@ -15,21 +15,21 @@
 - **RDS, ElastiCache** are services that can scale vertically by upgrading the underlying instance type.
 - There’s usually a limit to how much you can vertically scale (hardware limit).
 
-## Horizontal Scalability
+**Horizontal Scalability**
 - Horizontal Scalability means increasing the number of instances / systems for your application. 
 - Horizontal scaling implies distributed systems.
 - This is very common for web applications or modern applications. 
 - It’s easy to horizontally scale thanks the cloud offerings such as Amazon EC2.
 - Scaling in or scaling out.
 
-## High Availability
+**High Availability**
 - High Availability usually goes hand in hand with horizontal scaling
 - High availability means running your application / system in at least 2 data centers (== Availability Zones)
 - The goal of high availability is to survive a data center loss
 - The high availability can be passive (for RDS Multi AZ for example)
 - The high availability can be active (for horizontal scaling)
 
-## High Availability and Scalability for EC2
+**High Availability and Scalability for EC2**
 
 - **Vertical Scaling**: Increase instance size (scale up or down)
     - From: t2.nano - 0.5G of RAM, 1 vCPU
@@ -71,7 +71,7 @@
 - If the response is not 200 (OK), then the instance is unhealthy
 - Happens every n seconds and the time interval can be modified
 
-## Types of Load Balancers [Need to know for the exam]
+**Types of Load Balancers (Exam)**
 - AWS has 3 kinds of managed Load Balancers
     - **Classic Load Balancer (v1 - old generation) – 2009**: HTTP, HTTPS, TCP
     - **Application Load Balancer (v2 - new generation) – 2016**: HTTP, HTTPS, WebSocket. **Should be on the exam**
@@ -137,7 +137,7 @@
 - For CLBs it is at the LB level
 - Stickiness has a max timeout of 7 days
 
-**Cross-Zone Load Balancing** (Meh)
+**Cross-Zone Load Balancing**
 
 **With Cross Zone Load Balancing**: each load balancer instance distributes evenly across all registered instances in all AZ
 - Otherwise, each load balancer node distributes requests evenly across the
@@ -155,4 +155,65 @@ registered instances in its Availability Zone only.
 
 **Network Load Balancer**
 - Disabled by default
-- You pay charges for inter AZ data if enabled 
+- You pay charges for inter AZ data if enabled
+
+# SSL/TLS - Basics
+
+- An SSL Certificate allows traffic between your clients and your load balancer to be encrypted in transit (in-flight encryption)
+- SSL refers to Secure Sockets Layer, used to encrypt connections
+- TLS refers to Transport Layer Security, which is a newer version
+- Nowadays, TLS certificates are mainly used, but people still refer as SSL
+- Public SSL certificates are issued by Certificate Authorities (CA)
+- Comodo, Symantec, GoDaddy, GlobalSign, Digicert, Letsencrypt, etc…
+- SSL certificates have an expiration date (you set) and must be renewed
+
+**Load Balancer - SSL Certificates**
+- The load balancer uses an X.509 certificate (SSL/TLS server certificate)
+- You can manage certificates using ACM (AWS Certificate Manager)
+- You can create upload your own certificates alternatively
+- HTTPS listener:
+    - You must specify a default certificate
+    - You can add an optional list of certs to support multiple domains
+    - Clients can use SNI (Server Name Indication) to specify the hostname they reach
+    - Ability to specify a security policy to support older versions of SSL / TLS (legacy clients)
+
+**SSL – Server Name Indication (SNI)**
+- SNI solves the problem of loading multiple SSL certificates onto one web server (to serve
+multiple websites)
+- It’s a “newer” protocol, and requires the client to indicate the hostname of the target server
+in the initial SSL handshake
+- The server will then find the correct certificate, or return the default one
+- Note:
+    - Only works for ALB & NLB (newer generation), CloudFront
+    - Does not work for CLB (older gen)
+
+**Elastic Load Balancers – SSL Certificates**
+
+**Classic Load Balancer (v1)**
+- Support only one SSL certificate
+- Must use multiple CLB for multiple hostname with multiple SSL certificates
+
+**Application Load Balancer (v2)**
+- Supports multiple listeners with multiple SSL certificates
+- Uses Server Name Indication (SNI) to make it work
+
+**Network Load Balancer (v2)**
+- Supports multiple listeners with multiple SSL certificates
+- Uses Server Name Indication (SNI) to make it work
+
+**ELB – Connection Draining**
+- Feature naming:
+    - CLB: Connection Draining
+    - Target Group: Deregistration Delay (for ALB & NLB)
+- Time to complete “in-flight requests” while the instance is de-registering or unhealthy
+- Stops sending new requests to the instance which is de-registering
+- Between 1 to 3600 seconds, default is 300 seconds
+- Can be disabled (set value to 0)
+- Set to a low value if your requests are short
+
+
+
+
+
+
+
