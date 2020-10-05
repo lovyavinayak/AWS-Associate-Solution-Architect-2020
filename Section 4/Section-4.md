@@ -54,7 +54,7 @@
 - High availability across zones. Load balancer and EC2 instance can span across multiple AZs. 
 - Separate public traffic from private traffic
 - **Public Traffic**: Traffic from users to load balancers
-- **Private Traffic**: Traffic from load balancer to EC2 instances
+- **Private Traffic**: Traffic from load balancer to EC2 instances (This is a good practice)
 
 **Why use an EC2 Load Balancer (ELB)?**
 - An ELB is a managed load balancer
@@ -84,13 +84,14 @@
 - Supports TCP (Layer 4), HTTP & HTTPS (Layer 7)
 - Health checks are TCP or HTTP based
 - Fixed hostname XXX.region.elb.amazonaws.com
+- Each application needs to have its own CLB
 
 **Application Load Balancer (v2)**
 - Application load balancers is Layer 7 (HTTP)
 - Load balancing to multiple HTTP applications across machines (target groups)
 - Load balancing to multiple applications on the same machine (ex: containers)
 - Support for HTTP/2 and WebSocket
-- Support redirects (from HTTP to HTTPS for example)
+- Support redirects (from HTTP to HTTPS for example) can be done at the load balancer level
 - Routing tables to different target groups
     - Routing based on path in URL (example.com/users & example.com/posts)
     - Routing based on hostname in URL (one.example.com & other.example.com)
@@ -98,6 +99,7 @@
 - ALB are a great fit for micro services & container-based application (example: Docker & Amazon ECS)
 - Has a port mapping feature to redirect to a dynamic port in ECS
 - In comparison, we’d need multiple Classic Load Balancer per application
+- ALB can be connected to multiple application
 - Check slide 89
 
 **Application Load Balancer (v2) Target Groups**
@@ -111,15 +113,19 @@
 - The application servers don’t see the IP of the client directly
     - The true IP of the client is inserted in the header X-Forwarded-For
     - We can also get Port (X-Forwarded-Port) and proto (X-Forwarded-Proto)
+    - The EC2 instance gets the IP of the load balancer to find out the client IP the EC2 instance would need to look at the header.
+- Do lecture 44
 
 **Network Load Balancer (v2)**
 - Network load balancers (Layer 4) allow to:
     - Forward TCP & UDP traffic to your instances
     - Handle millions of request per seconds
     - Less latency ~100 ms (vs 400 ms for ALB)
+    - NLB can only have Instance or IP as Target groups
 **NLB has one static IP per AZ, and supports assigning Elastic IP** (helpful for whitelisting specific IP)
 - NLB are used for extreme performance, TCP or UDP traffic
-- Not included in the AWS free tier    
+- Not included in the AWS free tier
+- DOES NLB NOT HAVE A SG? TRAFFIC NEEDS TO GO DIRECTLY TO EC2 INSTANCE? (CHECK)
 
 **Load Balancer Stickiness**
 - It is possible to implement stickiness so that the same client is always redirected to the same instance behind a load balancer
@@ -127,6 +133,9 @@
 - The “cookie” used for stickiness has an expiration date you control
 - Use case: make sure the user doesn’t lose his session data
 - Enabling stickiness may bring imbalance to the load over the backend EC2 instances
+- For ALBs stickiness is at the target group level 
+- For CLBs it is at the LB level
+- Stickiness has a max timeout of 7 days
 
 **Cross-Zone Load Balancing** (Meh)
 
@@ -136,20 +145,14 @@ registered instances in its Availability Zone only.
 
 **Cross-Zone Load Balancing**
 
-**Classic Load Balancer**
+**Classic Load Balancer** (Exam)
 - Disabled by default
 - No charges for inter AZ data if enabled
 
-**Application Load Balancer**
+**Application Load Balancer** (Exam)
 - Always on (cant be disabled)
 - No charges for inter AZ data
 
 **Network Load Balancer**
 - Disabled by default
 - You pay charges for inter AZ data if enabled 
-
-
-
-
-
-
