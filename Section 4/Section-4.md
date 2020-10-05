@@ -126,8 +126,26 @@
 - This works for Classic Load Balancers & Application Load Balancers
 - The “cookie” used for stickiness has an expiration date you control
 - Use case: make sure the user doesn’t lose his session data
-- Enabling stickiness may bring imbalance to
-the load over the backend EC2 instances
+- Enabling stickiness may bring imbalance to the load over the backend EC2 instances
+
+**Cross-Zone Load Balancing** (Meh)
+**With Cross Zone Load Balancing**: each load balancer instance distributes evenly across all registered instances in all AZ
+- Otherwise, each load balancer node distributes requests evenly across the
+registered instances in its Availability Zone only.
+
+**Cross-Zone Load Balancing**
+
+**Classic Load Balancer**
+- Disabled by default
+- No charges for inter AZ data if enabled
+**Application Load Balancer**
+- Always on (cant be disabled)
+- No charges for inter AZ data
+**Network Load Balancer**
+- Disabled by default
+- You pay charges for inter AZ data if enabled 
+
+
 
 
 
